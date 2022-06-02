@@ -5,6 +5,20 @@ import lombok.Getter;
 @Getter
 public class ItemVenda {
 
-	private Produto produto;
+	
+	public Integer getQuantidade() {
+		return quantidade;
+	}
 
+	private Produto produto;
+	private Integer quantidade;
+
+	public ItemVenda(Produto produto) {
+		this.produto = produto;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+	
 }

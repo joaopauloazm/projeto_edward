@@ -1,22 +1,41 @@
 package br.com.projeto.edward;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-import lombok.Getter;
-
-@Getter
 public class Produto {
 
 	private String nome;
+	private Integer estoque;
 	private BigDecimal preco;
-	private Integer quantidade;
+	private LocalDate validade;
 
-	public Produto(String nome, BigDecimal preco, Integer quantidade) {
+	public Produto(String nome, Integer estoque, BigDecimal preco, LocalDate validade) {
 		this.nome = nome;
+		this.estoque = estoque;
 		this.preco = preco;
-		this.quantidade = quantidade;
+		this.validade = validade;
+
 	}
 
-	//Criar uma lista de produtos
+	public String getNome() {
+		return nome;
+	}
+
+	public Integer getEstoque() {
+		return estoque;
+	}
+
+	public BigDecimal getPreco() {
+		return preco;
+	}
+
+	public LocalDate getValidade() {
+		return validade;
+	}
+
+	public void diminuiEstoque(int valor) {
+		this.estoque = this.estoque - valor;
+	}
 
 }

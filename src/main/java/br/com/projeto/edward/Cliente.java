@@ -1,8 +1,5 @@
 package br.com.projeto.edward;
 
-import lombok.Getter;
-
-@Getter
 public class Cliente {
 
 	private String nome;
@@ -21,8 +18,28 @@ public class Cliente {
 		this.email = email;
 	}
 
-	public void adiconaListaCliente(Cliente cliente) {
-		adiconaListaCliente(cliente);
+	public String getNome() {
+		return nome;
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public String getEnderceco() {
+		return enderceco;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 }
