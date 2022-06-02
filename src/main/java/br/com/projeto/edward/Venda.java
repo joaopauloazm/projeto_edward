@@ -8,13 +8,12 @@ public class Venda {
 
 	private Cliente cliente;
 	private LocalDate emissao;
-	
-	List<ItemVenda> vendas = new ArrayList<>();
 
-	public Venda(Cliente cliente, LocalDate emissao, List<ItemVenda> lista) {
+	private List<ItemVenda> itensVendas = new ArrayList<>();
+
+	public Venda(Cliente cliente) {
 		this.cliente = cliente;
-		this.emissao = emissao;
-		this.vendas = lista;
+		this.emissao = LocalDate.now();
 	}
 
 	public Cliente getCliente() {
@@ -24,14 +23,17 @@ public class Venda {
 	public LocalDate getEmissao() {
 		return emissao;
 	}
-	
-	public void addVenda(ItemVenda venda) {
-		vendas.add(venda);
+
+	public void addItemVenda(ItemVenda venda) {
+		itensVendas.add(venda);
 	}
 
-	public void removeVenda(ItemVenda venda) {
-		vendas.remove(venda);
+	public void removeaddItemVenda(ItemVenda venda) {
+		itensVendas.remove(venda);
 	}
-	
+
+	public List<ItemVenda> getItensVendas() {
+		return itensVendas;
+	}
 
 }

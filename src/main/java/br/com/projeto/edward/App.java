@@ -1,8 +1,11 @@
 package br.com.projeto.edward;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+
+import br.com.projeto.edward.exceptions.NegocioException;
 
 public class App {
 
@@ -18,8 +21,8 @@ public class App {
 			// trycatch
 			System.out.println("MENU PRINCIPAL");
 			System.out.println("1 - CADASTRAR/EXCLUIR CLIENTES");
-			System.out.println("2 - CADASTRAR/EXCLUIR VENDAS");
-			System.out.println("3 - CONTROLE DE ESTOQUES");
+			System.out.println("2 - CADASTRAR/EXCLUIR PRODUTOS");
+			System.out.println("3 - CADASTRAR VENDAS");
 			System.out.println("4 - EMITIR NOTA FISCAL");
 			System.out.println("0 - SAIR");
 			System.out.print("DIGITE A OPÇÃO DESEJADA: ");
@@ -29,9 +32,9 @@ public class App {
 			if (opcao == 1) {
 				cadastrarClientes();
 			} else if (opcao == 2) {
-				cadastrarVendas();
+				cadastroProdutos(); 
 			} else if (opcao == 3) {
-				controleEstoque();
+				cadastrarVendas(); 
 			} else if (opcao == 4) {
 				emissaoNotaFiscal();
 			} else if (opcao == 0) {
@@ -106,21 +109,88 @@ public class App {
 
 	}
 
+	private static void cadastroProdutos() {
+
+		BD bd = new BD();
+		sc = new Scanner(System.in);
+		boolean condicao1 = true;
+
+		do {
+
+			System.out.println("PRODUTOS");
+			System.out.println("1 - ADICIONAR PRODUTO");
+			System.out.println("2 - REMOVER PRODUTO");
+			System.out.println("0 - MENU PRINCIPAL");
+			System.out.print("DIGITE A OPÇÃO DESEJADA: ");
+			int opcao = sc.nextInt();
+			boolean condicao2 = true;
+			System.out.println();
+
+			if (opcao == 1) {
+				do {
+					sc.nextLine();
+					System.out.print("Nome do produto: ");
+					String nomeProduto = sc.nextLine();
+					System.out.print("Quantidade do produto: ");
+					int quantidadeProduto = sc.nextInt();
+					System.out.print("Preço do produto: ");
+					BigDecimal precoProduto = sc.nextBigDecimal();
+					System.out.println();
+
+					Produto produto = new Produto(nomeProduto, quantidadeProduto, precoProduto);
+					bd.addProduto(produto);
+
+					System.out.print("Para continuar digite qualquer número, para sair digite 0: ");
+					int n = sc.nextInt();
+
+					if (n == 0) {
+						condicao2 = false;
+						break;
+					}
+
+				} while (condicao2 == true);
+
+			} else if (opcao == 2) {
+
+				for (int i = 0; i < bd.getProdutos().size(); i++) {
+					System.out.println(i + " - " + bd.getProdutos().get(i).getNome());
+				}
+
+				System.out.println();
+				System.out.print("Qual produto deseja remover: ");
+				int n = sc.nextInt();
+
+				bd.removeProduto(bd.getProdutos().get(n));
+				System.out.println();
+
+			} else if (opcao == 0) {
+				condicao1 = false;
+				break;
+
+			} else {
+				System.out.println("Essa opcão não existe, favor digite novamente!");
+			}
+
+		} while (condicao1 = true);
+
+	}
+
 	private static void cadastrarVendas() {
 
 		BD bd = new BD();
 		sc = new Scanner(System.in);
-		boolean condicao = true;
+		boolean condicao1 = true;
 
 		do {
 
 			System.out.println("VENDAS");
 			System.out.println("1 - ADICIONAR VENDA");
-			System.out.println("2 - REMOVER VENDA");
+			System.out.println("2 - EXCLUIR VENDA");
 			System.out.println("0 - MENU PRINCIPAL");
 			System.out.print("DIGITE A OPÇÃO DESEJADA: ");
 			int opcao = sc.nextInt();
 			System.out.println();
+			boolean condicao2 = true;
 
 			if (opcao == 1) {
 
@@ -131,59 +201,78 @@ public class App {
 				System.out.println();
 				System.out.print("Qual cliente deseja comprar: ");
 				int n = sc.nextInt();
+				
+				Venda venda = new Venda (bd.getClientes().get(n));
+				bd.addVenda(venda);
+				
+				do {
+					try {	
+						for (int i = 0; i < bd.getProdutos().size(); i++) {
+							System.out.println(i + " - " + bd.getProdutos().get(i).getNome() + ", "
+									+ bd.getProdutos().get(i).getEstoque() + ", R$: " + bd.getProdutos().get(i).getPreco());
+						}
+						System.out.println();
+						System.out.println();
+						System.out.print("Qual produto deseja adicionar: ");
+						n = sc.nextInt();
+						System.out.println(n + " - Produto: " + bd.getProdutos().get(n).getNome() + "; Quantidade: "
+								+ bd.getProdutos().get(n).getEstoque() + "; Valor R$: " + bd.getProdutos().get(n).getPreco()+ "; ");
+						System.out.print("Adicione a quantidade desejada: ");
+						int quantidade = sc.nextInt();
+						System.out.println();
+						if (quantidade > bd.getProdutos().get(n).getEstoque()) {
+							throw new NegocioException("O estuque possui apenas" + bd.getProdutos().get(n).getEstoque() + " produtos, repita!");
+						}
+						
+						ItemVenda itemVenda = new ItemVenda (bd.getProdutos().get(n), quantidade);
+						venda.addItemVenda(itemVenda);
+						bd.getProdutos().get(n).diminuiEstoque(quantidade);
+						
+						System.out.print("Para continuar digite qualquer número, para sair digite 0: ");
+						int i = sc.nextInt();
+						
+						if (i == 0) {
+							condicao2 = false;
+							break;
+						}
 
-				for (int i = 0; i < bd.getProdutos().size(); i++) {
-					System.out.println(i + " - " + bd.getProdutos().get(i).getNome() + ", "
-							+ bd.getProdutos().get(i).getEstoque() + ", R$: " + bd.getProdutos().get(i).getPreco());
-				}
-				System.out.println();
-				System.out.print("Qual produto deseja adicionar: ");
-				n = sc.nextInt();
-				System.out.println(n + " - " + bd.getProdutos().get(n).getNome() + ", "
-						+ bd.getProdutos().get(n).getEstoque() + ", R$: " + bd.getProdutos().get(n).getPreco());
-				System.out.println("Adicione a quantidade desejada: ");
-				int quantidade = sc.nextInt();
-				System.out.println("Adicione de emissao: ");
-				String dataEmissaoVenda = sc.nextLine();
-				;
-
-				// Produto produto = new Produto(bd.getProdutos().get(n).getNome(), bd.getProdutos().get(n).diminuiEstoque(quantidade), bd.getProdutos().get(n).getPreco(), bd.getProdutos().get(n).getValidade());
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+						System.out.println();
+					}
+					
+				} while (condicao2 == true);
 
 			} else if (opcao == 2) {
+				
+				for (int i = 0; i < bd.getVendas().size(); i++) {
+					System.out.println(i + " - " + bd.getVendas().get(i).getCliente().getNome());
+				}
+
+				System.out.println();
+				System.out.print("Qual venda deseja excluir: ");
+				int n = sc.nextInt();
+
+				bd.removeVenda(bd.getVendas().get(n));
+				System.out.println();
 
 			} else if (opcao == 0) {
+				condicao1 = false;
+				break;
 
 			} else {
-
+				System.out.println("Essa opcão não existe, favor digite novamente!");
 			}
 
-		} while (condicao == true);
-
-	}
-
-	private static void controleEstoque() {
-
-		BD bd = new BD();
-		sc = new Scanner(System.in);
-
-		System.out.println("VENDAS");
-		System.out.println("1 - ADICIONAR PRODUTO");
-		System.out.println("2 - REMOVER PRODUTO");
-		System.out.println("0 - MENU PRINCIPAL");
-		System.out.print("DIGITE A OPÇÃO DESEJADA: ");
-		int opcao = sc.nextInt();
-		System.out.println();
-
-		if (opcao == 1) {
-		} else if (opcao == 2) {
-		} else if (opcao == 0) {
-		} else {
-		}
+		} while (condicao1 == true);
 
 	}
 
 	private static void emissaoNotaFiscal() {
 	}
+
+//	private static void ajusteDeEstoque() {
+//	}
 
 	public static LocalDate dataAniversario(String data) {
 		// throws

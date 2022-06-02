@@ -8,13 +8,11 @@ public class Produto {
 	private String nome;
 	private Integer estoque;
 	private BigDecimal preco;
-	private LocalDate validade;
 
-	public Produto(String nome, Integer estoque, BigDecimal preco, LocalDate validade) {
+	public Produto(String nome, Integer estoque, BigDecimal preco) {
 		this.nome = nome;
 		this.estoque = estoque;
 		this.preco = preco;
-		this.validade = validade;
 
 	}
 
@@ -30,12 +28,8 @@ public class Produto {
 		return preco;
 	}
 
-	public LocalDate getValidade() {
-		return validade;
-	}
-
-	public void diminuiEstoque(int valor) {
-		this.estoque = this.estoque - valor;
+	public void diminuiEstoque(int quantidade) {
+		this.estoque = this.estoque - quantidade;
 	}
 
 }

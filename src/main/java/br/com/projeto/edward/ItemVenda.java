@@ -2,23 +2,22 @@ package br.com.projeto.edward;
 
 import lombok.Getter;
 
-@Getter
 public class ItemVenda {
-
-	
-	public Integer getQuantidade() {
-		return quantidade;
-	}
 
 	private Produto produto;
 	private Integer quantidade;
-
-	public ItemVenda(Produto produto) {
+	
+	public ItemVenda(Produto produto, Integer quantidade) {
 		this.produto = produto;
+		this.quantidade = quantidade;
 	}
 
 	public Produto getProduto() {
 		return produto;
 	}
-	
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
 }

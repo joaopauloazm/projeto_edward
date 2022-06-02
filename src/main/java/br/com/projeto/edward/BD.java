@@ -5,11 +5,11 @@ import java.util.List;
 
 import lombok.Getter;
 
-@Getter
 public class BD {
 
 	private static final List<Cliente> clientes = new ArrayList<>();
 	private static final List<Produto> produtos = new ArrayList<>();
+	private static final List<Venda> vendas = new ArrayList<>();
 
 	public void addCliente(Cliente cliente) {
 		clientes.add(cliente);
@@ -33,6 +33,22 @@ public class BD {
 
 	public static List<Produto> getProdutos() {
 		return produtos;
+	}
+
+	public void addVenda(Venda venda) {
+		vendas.add(venda);
+	}
+
+	public void removeVenda(Venda venda) {
+		vendas.remove(venda);
+	}
+
+	public void removeaddItemVenda(Venda venda) {
+		vendas.remove(venda);
+	}
+
+	public static List<Venda> getVendas() {
+		return vendas;
 	}
 
 }
