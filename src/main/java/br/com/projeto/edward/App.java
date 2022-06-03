@@ -56,7 +56,6 @@ public class App {
 	}
 
 	private static void cadastrarClientes() {
-		// trycatch
 		BD bd = new BD();
 		sc = new Scanner(System.in);
 		boolean condicao = true;
@@ -77,13 +76,13 @@ public class App {
 				String nome = sc.nextLine();
 				System.out.print("CNPJ: ");
 				String cnpj = sc.nextLine();
-				System.out.print("Endereco: "); // Regex
+				System.out.print("Endereco: ");
 				String endereco = sc.nextLine();
-				System.out.print("CEP: "); // Regex
+				System.out.print("CEP: "); 
 				String cep = sc.nextLine();
-				System.out.print("Telefone: "); // Regex
+				System.out.print("Telefone: "); 
 				String telefone = sc.nextLine();
-				System.out.print("Email: "); // Regex
+				System.out.print("Email: "); 
 				String email = sc.nextLine();
 				System.out.println();
 
@@ -336,7 +335,6 @@ public class App {
 //	}
 
 	public static LocalDate dataAniversario(String data) {
-		// throws
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate dataAniversario = LocalDate.parse(data, format);
 		return dataAniversario;

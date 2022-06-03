@@ -6,7 +6,7 @@ public class Cliente {
 	private String cnpj;
 	private String enderceco;
 	private String cep;
-	private String telefone; // Regex
+	private String telefone; 
 	private String email;
 
 	public Cliente(String nome, String cnpj, String enderceco, String cep, String telefone, String email) {
