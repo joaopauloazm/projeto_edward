@@ -1,6 +1,6 @@
 package br.com.projeto.edward;
 
-import lombok.Getter;
+import java.math.BigDecimal;
 
 public class ItemVenda {
 
@@ -18,6 +18,10 @@ public class ItemVenda {
 
 	public Integer getQuantidade() {
 		return quantidade;
+	}
+	
+	public BigDecimal getValorTotal() {
+		return BigDecimal.valueOf(quantidade).multiply(produto.getPreco());
 	}
 
 }

@@ -18,7 +18,7 @@ public class App {
 		boolean condicao = true;
 
 		do {
-			// trycatch
+
 			System.out.println("MENU PRINCIPAL");
 			System.out.println("1 - CADASTRAR/EXCLUIR CLIENTES");
 			System.out.println("2 - CADASTRAR/EXCLUIR PRODUTOS");
@@ -26,22 +26,28 @@ public class App {
 			System.out.println("4 - EMITIR NOTA FISCAL");
 			System.out.println("0 - SAIR");
 			System.out.print("DIGITE A OPÇÃO DESEJADA: ");
-			int opcao = sc.nextInt();
-			System.out.println();
+			try {
+				int opcao = sc.nextInt();
+				System.out.println();
 
-			if (opcao == 1) {
-				cadastrarClientes();
-			} else if (opcao == 2) {
-				cadastroProdutos(); 
-			} else if (opcao == 3) {
-				cadastrarVendas(); 
-			} else if (opcao == 4) {
-				emissaoNotaFiscal();
-			} else if (opcao == 0) {
-				condicao = false;
-				break;
-			} else {
-				System.out.println("Essa opcão não existe, favor digite novamente!");
+				if (opcao == 1) {
+					cadastrarClientes();
+				} else if (opcao == 2) {
+					cadastroProdutos();
+				} else if (opcao == 3) {
+					cadastrarVendas();
+				} else if (opcao == 4) {
+					emissaoNotaFiscal();
+				} else if (opcao == 0) {
+					condicao = false;
+					break;
+				} else {
+					System.out.println("Essa opcão não existe, favor digite novamente!");
+				}
+
+			} catch (Exception e) {
+				System.out.println("Something is wrong!");
+			} finally {
 			}
 
 		} while (condicao == true);
@@ -106,7 +112,6 @@ public class App {
 				System.out.println("Essa opcão não existe, favor digite novamente!");
 			}
 		} while (condicao == true);
-
 	}
 
 	private static void cadastroProdutos() {
@@ -201,36 +206,39 @@ public class App {
 				System.out.println();
 				System.out.print("Qual cliente deseja comprar: ");
 				int n = sc.nextInt();
-				
-				Venda venda = new Venda (bd.getClientes().get(n));
+
+				Venda venda = new Venda(bd.getClientes().get(n));
 				bd.addVenda(venda);
-				
+
 				do {
-					try {	
+					try {
 						for (int i = 0; i < bd.getProdutos().size(); i++) {
 							System.out.println(i + " - " + bd.getProdutos().get(i).getNome() + ", "
-									+ bd.getProdutos().get(i).getEstoque() + ", R$: " + bd.getProdutos().get(i).getPreco());
+									+ bd.getProdutos().get(i).getEstoque() + ", R$: "
+									+ bd.getProdutos().get(i).getPreco());
 						}
 						System.out.println();
 						System.out.println();
 						System.out.print("Qual produto deseja adicionar: ");
 						n = sc.nextInt();
 						System.out.println(n + " - Produto: " + bd.getProdutos().get(n).getNome() + "; Quantidade: "
-								+ bd.getProdutos().get(n).getEstoque() + "; Valor R$: " + bd.getProdutos().get(n).getPreco()+ "; ");
+								+ bd.getProdutos().get(n).getEstoque() + "; Valor R$: "
+								+ bd.getProdutos().get(n).getPreco() + "; ");
 						System.out.print("Adicione a quantidade desejada: ");
 						int quantidade = sc.nextInt();
 						System.out.println();
 						if (quantidade > bd.getProdutos().get(n).getEstoque()) {
-							throw new NegocioException("O estuque possui apenas" + bd.getProdutos().get(n).getEstoque() + " produtos, repita!");
+							throw new NegocioException("O estoque possui apenas" + bd.getProdutos().get(n).getEstoque()
+									+ " produtos, repita!");
 						}
-						
-						ItemVenda itemVenda = new ItemVenda (bd.getProdutos().get(n), quantidade);
+
+						ItemVenda itemVenda = new ItemVenda(bd.getProdutos().get(n), quantidade);
 						venda.addItemVenda(itemVenda);
 						bd.getProdutos().get(n).diminuiEstoque(quantidade);
-						
+
 						System.out.print("Para continuar digite qualquer número, para sair digite 0: ");
 						int i = sc.nextInt();
-						
+
 						if (i == 0) {
 							condicao2 = false;
 							break;
@@ -240,11 +248,11 @@ public class App {
 						System.out.println(e.getMessage());
 						System.out.println();
 					}
-					
+
 				} while (condicao2 == true);
 
 			} else if (opcao == 2) {
-				
+
 				for (int i = 0; i < bd.getVendas().size(); i++) {
 					System.out.println(i + " - " + bd.getVendas().get(i).getCliente().getNome());
 				}
@@ -269,6 +277,59 @@ public class App {
 	}
 
 	private static void emissaoNotaFiscal() {
+
+		BD bd = new BD();
+		System.out.println();
+		System.out.println("************ CUPOM ************");
+		System.out.println();
+
+		bd.getVendas().forEach(venda -> imprimeCupom(venda));
+	}
+
+	private static void imprimeCupom(Venda venda) {
+
+		String linhaVenda = "Nome: " + venda.getCliente().getNome() + "\nCNPJ: " + venda.getCliente().getCnpj()
+				+ "\nEndereco: " + venda.getCliente().getEnderceco() + "\nCEP: " + venda.getCliente().getCep()
+				+ "\nTelefone: " + venda.getCliente().getTelefone() + "\nEmail: " + venda.getCliente().getEmail() + "\n";
+	
+		String linhasProdutos = "";
+		
+		for (ItemVenda item : venda.getItensVendas()) {
+			linhasProdutos = linhasProdutos + geraLinha(item);
+		}
+		
+		System.out.println(linhaVenda + linhasProdutos);
+	}
+
+	private static String geraLinha(ItemVenda item) {
+		System.out.println();
+		String linha1 = item.getProduto().getNome();
+
+		BigDecimal valorTotal = item.getProduto().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
+
+		int tQuantidade = String.valueOf(item.getQuantidade()).length();
+		int tValorUnitario = String.valueOf(item.getProduto().getPreco()).length();
+		int tValorTotalItem = String.valueOf(valorTotal).length();
+
+		int pontos = (31 - 3 - tQuantidade - tValorUnitario - tValorTotalItem);
+
+		String linha2 = item.getQuantidade() + "x " + item.getProduto().getPreco() + " " + geraPontos(pontos) + " "
+				+ valorTotal + "\n";
+
+		return linha1 + linha2;
+
+	}
+
+	private static String geraPontos(int pontos) {
+		String pontosRetorno = "";
+		int x = 1;
+
+		while (x < pontos) {
+			pontosRetorno = pontosRetorno + ".";
+			x++;
+		}
+
+		return pontosRetorno;
 	}
 
 //	private static void ajusteDeEstoque() {
